@@ -1,0 +1,2941 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="Movable Type  5.2.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="http://www.ruanyifeng.com/blog/styles.css" type="text/css" />
+<link rel="start" href="http://www.ruanyifeng.com/blog/" title="Home" />
+<link rel="alternate" type="application/atom+xml" title="Recent Entries" href="http://feeds.feedburner.com/ruanyifeng" />
+<script type="text/javascript" src="http://www.ruanyifeng.com/blog/mt.js"></script>
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html">
+<dc:title>Node.js 命令行程序开发教程</dc:title>
+<dc:description>一种编程语言是否易用，很大程度上，取决于开发命令行程序的能力。...</dc:description>
+<dc:creator>阮一峰</dc:creator>
+<dc:date>2015-05-26T09:53:44+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/3.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/3.0/">
+</License>
+</rdf:RDF>
+-->
+
+
+    
+    <link rel="prev" href="http://www.ruanyifeng.com/blog/2013/11/being-toward-future.html" title="向着未来而生----《黑客与画家（精装本）》序言" />
+    <link rel="next" href="http://www.ruanyifeng.com/blog/2013/12/naive_bayes_classifier.html" title="朴素贝叶斯分类器的应用" />
+    
+    <title>Stack的三种含义 - 阮一峰的网络日志</title>
+</head>
+<body id="scrapbook" class="mt-entry-archive one-column">
+<script>
+if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) document.body.classList.add('mobile');
+
+window.addEventListener('load', function(event) {
+  setTimeout(function () {
+    hab('#sup-post-2');
+    hab('#gd1-inner');
+  }, 1000);
+});
+</script>
+    <div id="container">
+        <div id="container-inner">
+
+            <div id="header">
+    <div id="header-inner">
+        <div id="header-content">
+
+
+            <div id="header-name">阮一峰的网络日志 <span id="site_location"> » <a href="http://www.ruanyifeng.com/blog/" accesskey="1">首页</a></span><span id="site_archive"> » <a href="http://www.ruanyifeng.com/blog/archives.html">档案</a></span>
+</div>
+
+<div id="google_search">
+<!-- SiteSearch Google -->
+<form action="http://www.ruanyifeng.com/blog/search.html" id="cse-search-box">
+      <div>
+        <input type="hidden" name="cx" value="016304377626642577906:b_e9skaywzq" />
+    <input type="hidden" name="cof" value="FORID:11" />
+    <input type="hidden" name="ie" value="UTF-8" />
+        <input type="text" name="q" size="20" class="searchbox" id="sbi" value=""/>
+        <input type="image" src="/static/themes/theme_scrapbook/images/top_search_submit.gif" class="searchbox_submit" value="" alt="搜索" name="sa"/>
+      </div>
+    </form>
+<!-- SiteSearch Google -->
+</div>
+<div id="feed_icon">
+<a href="/feed.html" title="订阅Feed">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAUzSURBVHjavFdbbFRVFF3nPjoz7dTWTittaW0jUDRAUqaNojyqREnEQKgfUj9MqqAmhqRt/OCD4CuY+Kckoh+aiGKC+gMJbdHoRysJ8dkhhmJLNdDKtJU+6GMK87j3Hs85d2Z6HzNtMYWb3Dn3NWftvfba+5xNYDl+e6Fkj6yqb/oDRbWq14vlPBLRKCITkxf0ROLt+hNjp1PPSRK4kA3vF1dXNRcWlyA2OQU9eos9opAkAiKxD+XkKO6t15aRWO7J/MgmAZU8MEgexgZHMX518Dh72sYMmVKShnxWuWHdHtxKIDIYTgMuDzgfmSOIQkYMpdUF8OY92Hytt4/jvkg47czzU16iQovM3QFwmNck+Yyduu7D6NA0Z6JR4THntFs9V4tWQg6Ui3s6MwKDncsFTnXKLJhDSeUK3AgPtyhccDzmVs999buRt/1Vm4i0od+hX7+MRG87jPGB/w1u8FPj9xEw7McVrnYuOCvtpjTth3J/nTg99c8LRhKhr6D3dTB5R24bXFwbMXBsyZzeoXaycEpJ95TB09AGX/NpqLVNtw8urnVzLvHjFNxiFqRy2OOHuqUVnue+ACkoWzo4O6lGzTmuHq6nPvY2m9rVqjrIK2rMEKxqyG5NPAKt+wjo0LklgfNxJkZMA3KJvqRUk3z5UFY3QH14P0h+WUY79HPvgv7VuSg4ZRGY1YgZgqXmORccF17sy2ehnf9AeO085K2HQFbtXBScj0LcpgF2cN+WV+DZ/LJQu6gD4R7oV7pBJwbSgtMvfiPoVp56DySwxm7EtkMs1WdAB7qzggsDJKQYsHucSkOudrkiCPWR/fA2nYCn8SNIK4NptSMyAu3sAdDRkIsJdfth0LzSrODUoPNZ4KI9SxJI5UHk7D4GdQfz2us31c7CoHMjRkKuDPHseCMrONVhNcDJwMJpKFVvg9L4OaTiNWm1x789KCqkrXhVBiEz0WYCT2nAzQAD1/vaETv1GrRfP4Vx5cfMNcDPwvP0h0DhanPym7OIf/+O67vcJ1/PCJ4KgdzaUP6Wz+dU+5yIL6fV+PsHGAOdwlPpvvUOyeeAVGyCdqkDNB6DPjsBSrnndfOGevOh3RhGItxvA+fX1CtbGFhgYUFkFMZPR6F1HnClHq8HyubWtJexX06CRmdt33hrd7nA7SFY4qoGpnYuOKcRykPPgDCBcsHx9Iv+fNL2PueBehCWUfYQIIMGLOCcOmXDXsh1+yCt35tUPfvzGFuSvzvoinXOxqa02qOhM6733nVP2MAdaej2XN11DPKjLZCD+yBvahGCo7JfTKAN9UD7s8Oe9zUNIhz8fWI8DG2k38WCFdxugANcXrvTVd1IEbuv3Jour7Hzn7jLMBNfKs7R3i67gRVrbeCOEDhinmWhAatsqdquM2XzHZINhK2cqTjHr/XZdVJUbgN3MWAVXKbSyg9jesRW2xP9di+lwrL5ojM3m2H/kG9hwcIA37c71W6wJdW2J2S5nrjYbq/t1AHAhJsKQeyfPvf6IMJgghPJhFZ4x0KlfLFvt22du45Au/A1SOlGc0P672XXwhLtOcM0kTTEMMd0qkVmMNXxMd/tsedUjInr4SQDgOfeXMSiN0FCL5WHah4L1qqYXPJOJlttd+a5M+YpcG5poLYKQ5f+6JJ4r8bbJYP47hq4r7QAs9PjYNhHJd4o8l5taiwuOpa7AS4XKqI/5NjJbTnaWK92nLdLuhQAJayRNMiygXPBeQN+Qbvu0zDc3y+aUzhbkGR73sI7ljvUnndx2q3t+X8CDAD66FtrIL864AAAAABJRU5ErkJggg==" alt="" style="border: 0pt none;" />
+</a></div>
+
+        </div>
+    </div>
+</div>
+
+
+
+            <div id="content">
+                <div id="content-inner">
+
+
+                    <div id="alpha">
+                        <div id="alpha-inner">
+
+
+                            <div id="entry-1794" class="entry-asset asset hentry">
+                                <div class="asset-header">
+<div class="asset-nav entry-nav">
+
+<div class="entry-location">
+<ul>
+<li>上一篇：<a href="http://www.ruanyifeng.com/blog/2013/11/being-toward-future.html" title="向着未来而生----《黑客与画家（精装本）》序言">向着未来而生----《</a></li>
+<li>下一篇：<a href="http://www.ruanyifeng.com/blog/2013/12/naive_bayes_classifier.html" title="朴素贝叶斯分类器的应用">朴素贝叶斯分类器的应用</a></li>
+</ul>
+</div>
+
+
+    
+                                    <div class="entry-categories">
+                                        <p>分类<span class="delimiter">：</span></p>
+                                        <ul>
+                                            <li><a href="http://www.ruanyifeng.com/blog/computer/" rel="tag">理解计算机</a></li>
+                                        </ul>
+                                    </div>
+    
+
+
+                                            
+</div>
+                                </div>
+<article class="hentry">
+                                    <h1 id="page-title" class="asset-name entry-title">Stack的三种含义</h1>
+                                            <div id="share_button" style="float:right;padding-right:2em;padding-top:1em;"></div>
+                                    <div class="asset-meta">
+                                        
+
+                                            <p class="vcard author">作者： <a class="fn url" href="http://www.ruanyifeng.com">阮一峰</a></p>
+                                    <p>日期： <a href="http://www.ruanyifeng.com/blog/2013/11/"><abbr class="published" title="2013-11-29T10:57:32+08:00">2013年11月29日</abbr></a></p>
+
+
+                                    </div>
+                                
+                                <div class="asset-content entry-content" id="main-content">
+
+                                    <!-- div class="asset-body" -->
+                                        <p>学习编程的时候，经常会看到stack这个词，它的中文名字叫做"栈"。</p>
+
+                                    <!-- /div -->
+
+
+                                    <!-- div id="more" class="asset-more" -->
+                                        <p>理解这个概念，对于理解程序的运行至关重要。容易混淆的是，这个词其实有三种含义，适用于不同的场合，必须加以区分。</p>
+
+<p><strong>含义一：数据结构</strong></p>
+
+<p>stack的第一种含义是一组数据的<a href="http://en.wikipedia.org/wiki/Stack_(abstract_data_type)">存放方式</a>，特点为LIFO，即后进先出（Last in, first out）。</p>
+
+<p><img src="http://image.beekka.com/blog/201311/bg2013112901.png" alt="数据结构stack" title="" /></p>
+
+<p>在这种数据结构中，数据像积木那样一层层堆起来，后面加入的数据就放在最上层。使用的时候，最上层的数据第一个被用掉，这就叫做"后进先出"。</p>
+
+<p>与这种结构配套的，是一些特定的方法，主要为下面这些。</p>
+
+<blockquote>
+
+<ul> 
+<li>push：在最顶层加入数据。</li>
+<li>pop：返回并移除最顶层的数据。</li>
+<li>top：返回最顶层数据的值，但不移除它。</li>
+<li>isempty：返回一个布尔值，表示当前stack是否为空栈。</li>
+</ul>
+</blockquote>
+
+<p><strong>含义二：代码运行方式</strong></p>
+
+<p>stack的第二种含义是<a href="http://en.wikipedia.org/wiki/Call_stack">"调用栈"</a>（call stack），表示函数或子例程像堆积木一样存放，以实现层层调用。</p>
+
+<p>下面以一段Java代码为例（<a href="http://www.itcsolutions.eu/2011/02/06/tutorial-java-8-understand-stack-and-heap/">来源</a>）。</p>
+
+<blockquote><pre><code class="language-clike">
+class Student{
+    int age;              
+    String name;      
+
+    public Student(int Age, String Name)
+    {
+        this.age = Age;
+        setName(Name);
+    }
+    public void setName(String Name)
+    {
+        this.name = Name;
+    }
+}
+
+public class Main{
+    public static void main(String[] args) {
+            Student s;           
+            s = new Student(23,"Jonh");
+    }
+}
+
+</code></pre></blockquote>
+
+<p>上面这段代码运行的时候，首先调用main方法，里面需要生成一个Student的实例，于是又调用Student构造函数。在构造函数中，又调用到setName方法。</p>
+
+<p><img src="http://image.beekka.com/blog/201311/bg2013112902.gif" alt="调用栈" title="" /></p>
+
+<p>这三次调用像积木一样堆起来，就叫做"调用栈"。程序运行的时候，总是先完成最上层的调用，然后将它的值返回到下一层调用，直至完成整个调用栈，返回最后的结果。</p>
+
+<p><strong>含义三：内存区域</strong></p>
+
+<p>stack的第三种含义是<a href="http://en.wikipedia.org/wiki/Stack-based_memory_allocation">存放数据的一种内存区域</a>。程序运行的时候，需要内存空间存放数据。一般来说，系统会划分出两种不同的内存空间：一种叫做stack（栈），另一种叫做heap（堆）。</p>
+
+<p><img src="http://image.beekka.com/blog/201311/bg2013112903.jpg" alt="内存区域stack" title="" /></p>
+
+<p>它们的主要区别是：stack是有结构的，每个区块按照一定次序存放，可以明确知道每个区块的大小；heap是没有结构的，数据可以任意存放。因此，stack的寻址速度要快于heap。</p>
+
+<p><img src="http://image.beekka.com/blog/201311/bg2013112904.jpg" alt="内存区域heap" title="" /></p>
+
+<p>其他的区别还有，一般来说，每个线程分配一个stack，每个进程分配一个heap，也就是说，stack是线程独占的，heap是线程共用的。此外，stack创建的时候，大小是确定的，数据超过这个大小，就发生stack overflow错误，而heap的大小是不确定的，需要的话可以不断增加。</p>
+
+<p>根据上面这些区别，数据存放的规则是：只要是局部的、占用空间确定的数据，一般都存放在stack里面，否则就放在heap里面。请看下面这段代码（<a href="http://www.codeproject.com/Articles/76153/Six-important-NET-concepts-Stack-heap-value-types">来源</a>）。</p>
+
+<blockquote><pre><code class="language-clike">
+public void Method1()
+{
+    int i=4;
+
+    int y=2;
+
+    class1 cls1 = new class1();
+}
+
+</code></pre></blockquote>
+
+<p>上面代码的Method1方法，共包含了三个变量：i, y 和 cls1。其中，i和y的值是整数，内存占用空间是确定的，而且是局部变量，只用在Method1区块之内，不会用于区块之外。cls1也是局部变量，但是类型为指针变量，指向一个对象的实例。指针变量占用的大小是确定的，但是对象实例以目前的信息无法确知所占用的内存空间大小。</p>
+
+<p>这三个变量和一个对象实例在内存中的存放方式如下。</p>
+
+<p><img src="http://image.beekka.com/blog/201311/bg2013112905.jpg" alt="内存空间stack实例" title="" /></p>
+
+<p>从上图可以看到，i、y和cls1都存放在stack，因为它们占用内存空间都是确定的，而且本身也属于局部变量。但是，cls1指向的对象实例存放在heap，因为它的大小不确定。作为一条规则可以记住，所有的对象都存放在heap。</p>
+
+<p>接下来的问题是，当Method1方法运行结束，会发生什么事？</p>
+
+<p>回答是整个stack被清空，i、y和cls1这三个变量消失，因为它们是局部变量，区块一旦运行结束，就没必要再存在了。而heap之中的那个对象实例继续存在，直到系统的垃圾清理机制（garbage collector）将这块内存回收。因此，一般来说，内存泄漏都发生在heap，即某些内存空间不再被使用了，却因为种种原因，没有被系统回收。</p>
+
+<p>（完）</p>
+
+                                    <!-- /div -->
+
+                                </div>
+    <script type="text/javascript" src="/newwindow.js"></script>
+                                <div class="asset-footer">
+
+<h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">创意共享3.0许可证</a>）</li>
+<li>发表日期： <abbr class="published" title="2013-11-29T10:57:32+08:00">2013年11月29日</abbr></li>
+<li>更多内容： <a href="http://www.ruanyifeng.com/blog/archives.html" target="_blank"> 档案</a>  » 
+<a href="http://www.ruanyifeng.com/blog/computer/"> 理解计算机</a> 
+</li>
+<li>博客文集：<a href="http://road.ruanyifeng.com" target="_blank">《寻找思想之路》</a>，<a href="https://ruanyf.github.io/survivor" target="_blank">《未来世界的幸存者》</a></li>
+<li>社交媒体：<a href="https://twitter.com/ruanyf" target="_blank"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAk1JREFUeNqsVc9rE0EU/mZ3dhPNJl2bVIk/Km09aFBE8GLvnrwJXvwLxIsgCP4Fnit6E8Gb0IMHwUsL9SSNgiAoooJIpE1Joo1h82uT7IxvxmRN3Q32kAdvdrI773vfe+/bDTu9WioDcDAda3Ja8piepQ1avCkCeny0Y+R9KenKwOmHHLvPaKn7AtVOoO8dOWDCMpg+41gMQv5FNEJACgoE8MsPNLDBhgfoutMOsJDmWLmU037C4TApciljwQ/kHoohQxV06+wMXNvE7WINuaSpvdYVKLgWnl3O4zAxU3Z1IYVGT+B5qYWV9z2kbQaT/cOwTsxOUUYF+mB5Dkmi8HG3h2q9hxsFNwRTdvQgxxnXRrMvIdkEhllis/qtiWuLDm4WZnBlPoWnXz28LHdw0uGR7m9Wu3j0qYGEubfn4UlBfXO4gTZltRNMg9w9f0i7kNFxllsBlS0x75gYfxyWTBUjT2W5CSMSPBrQuG21+hiMDS8CeCzF8eSLp13uQ3Ab1IqMFZN8tFHPmgOBF99bYP8Be1Xp6t7OJszJgKpPSiZvaj7uf2hguz2IBQuozDvFH6RDBjuK9wdQDvt0nMpW+8efGyh5UcAeZb2+UcHbnz5Jx4wdlp4yJYU3kLiQtfBwOYeLc8nIwfXtNu69q2Oz4mMxbemYOOOjKarhvq51KUjg3GwiFPIuvcNF6pnSnWK0lOEabNLgQh1aJFAhlGB9rG110B2+oyRNPc0sZbRNFltmLKDKqj4Qrm1ojzOxDz2pyPQ0P7CK4c40/wJ+CzAAGYrXsvfFXR4AAAAASUVORK5CYII=" style="border:0;"> twitter</a>，<a href="http://weibo.com/ruanyf" target="_blank"><img src="data:image/png;base64,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" style="border:0;" /> weibo</a></li>
+<li>Feed订阅： <a href="/feed.html" target="_blank"><img src="data:image/gif;base64,R0lGODlhFAAUANU2APV1GfmrePZ8IeR5VPq2ieNkLf7p3NpFJveCJ/NoFfibVPR1IexiJfvdzuZrNfXGuOhUEueTevaFOfzIpNxDGeZZJNU6IOubifiVTfOnid1aLuZpLOFSJf/28vJtIvGcefaLSd5kNu9iFv/z6//48//t4uFfLfNkCeJNGuGNc/rCof/+/PVxEeldI/V5KeKMbu9nIvB2OvzQtNxMKfOPXP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAADYALAAAAAAUABQAAAb/QJstEjKZCsjCZsl0pIS2QWXaYsA8noVWIEAgFoNhhWNyMESi7Jbr/aZCFdRnZJAFJCwAt+vlOkwtEBk1hDUkExJ6bQJaGyYMLTQTDSOFHQF8jAseSFYiJwkuAQ2FE1xaHjBIMDAgARguJwABJIQTLJswDEgeIgSEJQQILAqVNQEiui1HHgkBhTUGCiwYtR0xLS0VJhtaEgoEBoQkGCfPNSoQY9xaCwAsCBPALgmkJA4cZN0CAAgY/PJqEIDwgVAECjM0bOAnwcAKGQJclKhRgoGDDjUeUDigkN8vQiBOfByAglSDAxw3IBCgYEU0FyJoEPpA4UGNDjMsaHDQR8EdPVYOMmQYQGHAhQgHLIRIsWAlgASsGMRBMWMGBQtYZ7yIsoBRKkhjOMxAiXJGGCEpHGxIYsSIhrcaQmy1EQQAOw==" style="border:0;" /></a></li>
+
+</ul>
+                                </div>
+</article>
+                            </div>
+
+                        <div id="sup-post-2" style="display: inline-block ! important;width: 100%;">
+   <p style="text-align:center;"><a href="http://www.zhufengpeixun.cn/jscourse/new/js/index.html?ref=ruanyifeng.com" target="_blank"><img alt="珠峰培训" src="http://www.ruanyifeng.com/blog/images/sup_zhufeng_page.png" style="border:none;"/></a></p>
+   <p style="text-align:center;"><a href="https://cn.udacity.com/ruanyfbanner/" title="优达学城" target="_blank"><image alt="优达学城" src="https://s3.cn-north-1.amazonaws.com.cn/static-documents/marketing/uda_banner_ryf.jpg" style="border:none;display: block !important;" /></a>
+</p>                         
+  </div>
+
+<div id="related_entries">
+<h2>相关文章</h2>
+<ul>
+
+<li><strong>2016.12.02: <a href="http://www.ruanyifeng.com/blog/2016/12/user_space_vs_kernel_space.html">User space 与 Kernel space</a></strong>
+
+                           <div class="entry-body">
+                              学习 Linux 时，经常可以看到两个词：User space（用户空间）和 Kernel space（内核空间）。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2016.11.22: <a href="http://www.ruanyifeng.com/blog/2016/11/byte-order.html">理解字节序</a></strong>
+
+                           <div class="entry-body">
+                              1.
+
+计算机硬件有两种储存数据的方式：大端字节序（big endian）和小端字节序（little endian）。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2016.08.05: <a href="http://www.ruanyifeng.com/blog/2016/08/boolean-algebra.html">布尔代数入门</a></strong>
+
+                           <div class="entry-body">
+                              布尔代数是计算机的基础。没有它，就不会有计算机。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2016.06.16: <a href="http://www.ruanyifeng.com/blog/2016/06/dns.html">DNS 原理入门</a></strong>
+
+                           <div class="entry-body">
+                              DNS 是互联网核心协议之一。不管是上网浏览，还是编程开发，都需要了解一点它的知识。
+
+                           </div>
+
+</li>
+
+ 
+</ul>
+</div>
+
+
+<div id="gd1" style="display: block !important;">
+<h2>广告<a href="/support.html">（购买广告位）</a></h2>
+<div id="gd1-inner">
+<div id="gd1-left">
+<a href="http://www.miaov.com/?utm_source=ruanyifeng&" alt="妙味课堂" target="_blank"><image alt="妙味课堂" src="http://www.ruanyifeng.com/blog/images/sup_miaov_201703.jpg" style="border:none;display: block !important;" /></a>
+<br />
+<a href="http://course.ptteng.com/?utm_source=ruanyifeng" title="IT修真院" target="_blank"><image alt="IT修真院" src="http://www.ruanyifeng.com/blog/images/sup_ptteng_300.jpg" style="border:none;display: block !important;" /></a>
+</div>
+<div id="gd1-right">
+<a href="http://apeclass.cn/1212/index.html?utm_source=ruanyifeng" title="海棠学院" target="_blank"><image alt="海棠学院" src="http://www.ruanyifeng.com/blog/images/sup_apeclass_300.png" style="border:none;display: block !important;" /></a>
+<br />
+<a title="BitTiger" href="https://www.bittiger.io/livecourses/hb5P55KDJBbrh2LSF?utm_source=ruanyifeng&utm_medium=ruanyifeng&utm_content=ruanyifengLL003-2" target="_blank"><image alt="BitTiger" src="http://www.ruanyifeng.com/blog/images/sup_bittiger_b4.jpg" style="border:none;" /></a>
+
+</div>
+</div>
+</div>
+                    
+
+                    <div id="comments" class="comments">
+
+
+    
+    
+        
+    <h2 class="comments-header">留言（72条）</h2>
+
+    <div id="comments-content" class="comments-content" style="clear: left;">
+        
+        <div id="comment-290002" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">才不是永超呢</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290002">
+            <p>栈是线程的。堆是进程的。涨姿势了。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013 11:39 AM">2013年11月29日 11:39</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290002">#</a>
+ | <a href="#comment-text" title="引用才不是永超呢的这条留言" onclick="return CommentQuote('comment-quote-290002','才不是永超呢');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290003" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.resty-cn.com" href="http://www.resty-cn.com" target="_blank" rel="nofollow">resty</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290003">
+            <p>stack的读取速度要比heap快的理论是怎么想出来的......</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013 11:54 AM">2013年11月29日 11:54</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290003">#</a>
+ | <a href="#comment-text" title="引用resty的这条留言" onclick="return CommentQuote('comment-quote-290003','resty');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290010" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.joeyio.com" href="http://www.joeyio.com" target="_blank" rel="nofollow">Joey</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290010">
+            <p>赞，简洁易懂</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013 12:35 PM">2013年11月29日 12:35</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290010">#</a>
+ | <a href="#comment-text" title="引用Joey的这条留言" onclick="return CommentQuote('comment-quote-290010','Joey');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290012" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Henry</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290012">
+            <p>所有语言通用还是只对.Net,因为我看到你引用的文章是正对.Net的，<br />
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013 12:40 PM">2013年11月29日 12:40</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290012">#</a>
+ | <a href="#comment-text" title="引用Henry的这条留言" onclick="return CommentQuote('comment-quote-290012','Henry');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290013" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">yk</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290013">
+            <blockquote>
+<pre>引用resty的发言：</pre>
+
+<p>stack的读取速度要比heap快的理论是怎么想出来的......</p>
+
+</blockquote>
+有点不严谨，最终寻址到后内存访问速度不会有差异，不过：
+stack内变量的分配速度会比heap快很多，只需要修改sp寄存器，heap内分配需要调用malloc。
+stack的寻址也会比heap快，通过sp/fp寄存器间接寻址。
+
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013 12:43 PM">2013年11月29日 12:43</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290013">#</a>
+ | <a href="#comment-text" title="引用yk的这条留言" onclick="return CommentQuote('comment-quote-290013','yk');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290014" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">damon</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290014">
+            <p>第一种语义是基础，第三种语义是第一种的实现，第二种语义是第三种语义的表现</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013 12:52 PM">2013年11月29日 12:52</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290014">#</a>
+ | <a href="#comment-text" title="引用damon的这条留言" onclick="return CommentQuote('comment-quote-290014','damon');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290024" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">阮一峰</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290024">
+            <p>@resty, @yk：</p>
+
+<p>谢谢指出，我已经做了修改。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013  1:14 PM">2013年11月29日 13:14</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290024">#</a>
+ | <a href="#comment-text" title="引用阮一峰的这条留言" onclick="return CommentQuote('comment-quote-290024','阮一峰');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290026" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">阿伦</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290026">
+            <p>通俗易懂，写得真好。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013  1:21 PM">2013年11月29日 13:21</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290026">#</a>
+ | <a href="#comment-text" title="引用阿伦的这条留言" onclick="return CommentQuote('comment-quote-290026','阿伦');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290029" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Chao</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290029">
+            <p>建议您去读一下CSAPP 和 操作系统相关的书， 您第二个和第三个解释错误太多了</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013  1:39 PM">2013年11月29日 13:39</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290029">#</a>
+ | <a href="#comment-text" title="引用Chao的这条留言" onclick="return CommentQuote('comment-quote-290029','Chao');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290031" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">StanleyZ</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290031">
+            <p>后两种算一回事, 函数调用和栈上数据都是使用同一块区域, 同样的进出方式. 非要从逻辑上区分会误导人吧. </p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013  1:47 PM">2013年11月29日 13:47</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290031">#</a>
+ | <a href="#comment-text" title="引用StanleyZ的这条留言" onclick="return CommentQuote('comment-quote-290031','StanleyZ');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290032" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Jeff</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290032">
+            <p>第二跟第三是同一个区域吧</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013  1:48 PM">2013年11月29日 13:48</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290032">#</a>
+ | <a href="#comment-text" title="引用Jeff的这条留言" onclick="return CommentQuote('comment-quote-290032','Jeff');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290033" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Y</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290033">
+            <p>配图是用什么画出来的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013  1:50 PM">2013年11月29日 13:50</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290033">#</a>
+ | <a href="#comment-text" title="引用Y的这条留言" onclick="return CommentQuote('comment-quote-290033','Y');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290070" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://jex.im/" href="http://jex.im/" target="_blank" rel="nofollow">Jex</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290070">
+            <blockquote>
+<pre>引用resty的发言：</pre>
+
+<p>stack的读取速度要比heap快的理论是怎么想出来的......</p>
+
+</blockquote>
+
+<p>我觉得这个文章显然是不严谨的，有点误导性。<br />
+第一条是基本概念的解释。<br />
+后面两个都是举例对Stack这种结构的一种应用。<br />
+文中说“因此，stack的寻址速度要快于heap”的理由显然是模糊不清的。如果只谈“寻址速度”（这术语不好说），stack上的数据的地址通常在编译时已经确定成一个相对stack base pointer(%ebp)的偏移，而heap中的地址则通常要运行时分配才确定。如果谈访问速度，stack比heap更快的原因则主要取决于CPU Cache和操作系统的实现。<br />
+但我的理解两者都并不是因为heap中的数据是无结构的。更何况heap中的数据无结构这种说法也不好理解啊，什么叫“无结构”呢？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013  4:37 PM">2013年11月29日 16:37</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290070">#</a>
+ | <a href="#comment-text" title="引用Jex的这条留言" onclick="return CommentQuote('comment-quote-290070','Jex');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290076" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">小白</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290076">
+            <p>1是普通程序员对栈的应用,<br />
+2,3是CPU对栈的应用吧.</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013  4:54 PM">2013年11月29日 16:54</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290076">#</a>
+ | <a href="#comment-text" title="引用小白的这条留言" onclick="return CommentQuote('comment-quote-290076','小白');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290152" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">ljqx</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290152">
+            <p>“作为一条规则可以记住，所有的对象都存放在heap。”这句对C++里的局部变量对象（非指针）适用吗？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 29, 2013  9:27 PM">2013年11月29日 21:27</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290152">#</a>
+ | <a href="#comment-text" title="引用ljqx的这条留言" onclick="return CommentQuote('comment-quote-290152','ljqx');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290257" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">YangZX</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290257">
+            <p>不得不说这篇文章解释得不太到位。</p>
+
+<p>“第二种含义”和“第三种含义”实际上只是 第一种含义（也是唯一的含义）的一个应用。并且实际上这两个是同一个栈。</p>
+
+<p>阮老师有时间可以读读CSAPP</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 30, 2013  9:30 AM">2013年11月30日 09:30</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290257">#</a>
+ | <a href="#comment-text" title="引用YangZX的这条留言" onclick="return CommentQuote('comment-quote-290257','YangZX');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290262" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.jayxon.com/" href="http://www.jayxon.com/" target="_blank" rel="nofollow">JayXon</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290262">
+            <p>Stack只有一种含义就是第一种，后面俩都是利用这种数据结构做的一些东西而已</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 30, 2013 10:09 AM">2013年11月30日 10:09</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290262">#</a>
+ | <a href="#comment-text" title="引用JayXon的这条留言" onclick="return CommentQuote('comment-quote-290262','JayXon');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290266" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://toyblocks.net/" href="http://toyblocks.net/" target="_blank" rel="nofollow">张冲</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290266">
+            <p>我能问一下，上边的图是用什么软件画出来的吗？<br />
+喜欢画图去表达想法，找不到合适的工具。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 30, 2013 10:30 AM">2013年11月30日 10:30</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290266">#</a>
+ | <a href="#comment-text" title="引用张冲的这条留言" onclick="return CommentQuote('comment-quote-290266','张冲');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290301" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">三心二意</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290301">
+            <blockquote>
+<pre>引用张冲的发言：</pre>
+
+<p>我能问一下，上边的图是用什么软件画出来的吗？<br />
+喜欢画图去表达想法，找不到合适的工具。</p>
+
+</blockquote>
+
+<p>Mockups</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 30, 2013  1:51 PM">2013年11月30日 13:51</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290301">#</a>
+ | <a href="#comment-text" title="引用三心二意的这条留言" onclick="return CommentQuote('comment-quote-290301','三心二意');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290428" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">BryantGui</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290428">
+            <blockquote>
+<pre>引用yk的发言：</pre>
+
+<p><br />
+有点不严谨，最终寻址到后内存访问速度不会有差异，不过：<br />
+stack内变量的分配速度会比heap快很多，只需要修改sp寄存器，heap内分配需要调用malloc。<br />
+stack的寻址也会比heap快，通过sp/fp寄存器间接寻址。</p>
+
+<p><br />
+</p></blockquote><br />
+讲的很有道理，有个小问题，malloc调用heap分配实现的，而不是heap分配调用malloc。
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 30, 2013  9:36 PM">2013年11月30日 21:36</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290428">#</a>
+ | <a href="#comment-text" title="引用BryantGui的这条留言" onclick="return CommentQuote('comment-quote-290428','BryantGui');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290450" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.gemoji.me" href="http://www.gemoji.me" target="_blank" rel="nofollow">哥墨迹</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290450">
+            <p>脱离了Java的范畴，有些概念是否不太适用？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 30, 2013 11:56 PM">2013年11月30日 23:56</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290450">#</a>
+ | <a href="#comment-text" title="引用哥墨迹的这条留言" onclick="return CommentQuote('comment-quote-290450','哥墨迹');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290542" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">zechuan</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290542">
+            <p>讲得好清楚啊，涨姿势！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  1, 2013  2:33 PM">2013年12月 1日 14:33</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290542">#</a>
+ | <a href="#comment-text" title="引用zechuan的这条留言" onclick="return CommentQuote('comment-quote-290542','zechuan');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290575" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">烤全羊</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290575">
+            <p>大家都发现了，这三个对Stack的解释是一个意思，没有本质区别</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  1, 2013  8:26 PM">2013年12月 1日 20:26</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290575">#</a>
+ | <a href="#comment-text" title="引用烤全羊的这条留言" onclick="return CommentQuote('comment-quote-290575','烤全羊');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290601" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">I小志T</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290601">
+            <p>楼主好人，以前有些模糊的概念，清楚多了！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  2, 2013 12:11 AM">2013年12月 2日 00:11</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290601">#</a>
+ | <a href="#comment-text" title="引用I小志T的这条留言" onclick="return CommentQuote('comment-quote-290601','I小志T');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290633" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">kmxz</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290633">
+            <p>下次讲讲 heap 的几个含义？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  2, 2013  9:21 AM">2013年12月 2日 09:21</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290633">#</a>
+ | <a href="#comment-text" title="引用kmxz的这条留言" onclick="return CommentQuote('comment-quote-290633','kmxz');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-290647" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">tossking</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-290647">
+            <p>总觉得这篇文章有的地方不对劲<br />
+写的不太对</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  2, 2013 10:15 AM">2013年12月 2日 10:15</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-290647">#</a>
+ | <a href="#comment-text" title="引用tossking的这条留言" onclick="return CommentQuote('comment-quote-290647','tossking');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-291192" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Gamer</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-291192">
+            <blockquote>
+<pre>引用Chao的发言：</pre>
+
+<p>建议您去读一下CSAPP 和 操作系统相关的书， 您第二个和第三个解释错误太多了</p>
+
+</blockquote>
+
+<p>“建议你去读《XXX》书”，这种废话还用你来说？你要是觉得原文由错的话请直接指出来，让大家判断一下。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  4, 2013 12:56 PM">2013年12月 4日 12:56</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-291192">#</a>
+ | <a href="#comment-text" title="引用Gamer的这条留言" onclick="return CommentQuote('comment-quote-291192','Gamer');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-291269" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://t.qq.com/stan_mu" href="http://t.qq.com/stan_mu" target="_blank" rel="nofollow">muwb</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-291269">
+            <p>含义三对理解jvm很有帮助哈。每个线程都有独立的TLAB，线程执行是用到的对象通过ref链接到heap中实例的地址，估计是这样的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  4, 2013  6:43 PM">2013年12月 4日 18:43</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-291269">#</a>
+ | <a href="#comment-text" title="引用muwb的这条留言" onclick="return CommentQuote('comment-quote-291269','muwb');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-291422" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">宇飞</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-291422">
+            <p>第二个和第三个是同一个内存区， 不仅包含了local variable， 也有函数返回地址， 正是因为如此buffer overflow 的攻击才有可能发生。如此分开解释会造成误导。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  5, 2013  3:07 PM">2013年12月 5日 15:07</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-291422">#</a>
+ | <a href="#comment-text" title="引用宇飞的这条留言" onclick="return CommentQuote('comment-quote-291422','宇飞');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-291904" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">bombless</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-291904">
+            <blockquote>
+<pre>引用damon的发言：</pre>
+
+<p>第一种语义是基础，第三种语义是第一种的实现，第二种语义是第三种语义的表现</p>
+
+</blockquote>
+
+<p>总结的不错。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  8, 2013 11:17 AM">2013年12月 8日 11:17</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-291904">#</a>
+ | <a href="#comment-text" title="引用bombless的这条留言" onclick="return CommentQuote('comment-quote-291904','bombless');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-291942" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://biwood.diandian.com" href="http://biwood.diandian.com" target="_blank" rel="nofollow">Biwood</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-291942">
+            <p>终于有点能看懂的了</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  8, 2013  7:50 PM">2013年12月 8日 19:50</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-291942">#</a>
+ | <a href="#comment-text" title="引用Biwood的这条留言" onclick="return CommentQuote('comment-quote-291942','Biwood');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-292130" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">春风化雨</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-292130">
+            <p>这个问题以前也想了几次，不过没有你想的深入。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  9, 2013 11:49 PM">2013年12月 9日 23:49</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-292130">#</a>
+ | <a href="#comment-text" title="引用春风化雨的这条留言" onclick="return CommentQuote('comment-quote-292130','春风化雨');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-292166" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://anool.net" href="http://anool.net" target="_blank" rel="nofollow">张利龙</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-292166">
+            <p>受益匪浅！谢谢分享</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 10, 2013  9:05 AM">2013年12月10日 09:05</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-292166">#</a>
+ | <a href="#comment-text" title="引用张利龙的这条留言" onclick="return CommentQuote('comment-quote-292166','张利龙');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-292365" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://bbs.scmroad.com" href="http://bbs.scmroad.com" target="_blank" rel="nofollow">scmroad</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-292365">
+            <p>请问您这篇文章里面的图片是用什么画的？还有字体。谢谢</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 11, 2013  8:18 AM">2013年12月11日 08:18</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-292365">#</a>
+ | <a href="#comment-text" title="引用scmroad的这条留言" onclick="return CommentQuote('comment-quote-292365','scmroad');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-292772" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">weixue</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-292772">
+            <blockquote>
+<pre>引用Jex的发言：</pre>
+
+<p></p>
+
+<p>我觉得这个文章显然是不严谨的，有点误导性。<br />
+第一条是基本概念的解释。<br />
+后面两个都是举例对Stack这种结构的一种应用。<br />
+文中说“因此，stack的寻址速度要快于heap”的理由显然是模糊不清的。如果只谈“寻址速度”（这术语不好说），stack上的数据的地址通常在编译时已经确定成一个相对stack base pointer(%ebp)的偏移，而heap中的地址则通常要运行时分配才确定。如果谈访问速度，stack比heap更快的原因则主要取决于CPU Cache和操作系统的实现。<br />
+但我的理解两者都并不是因为heap中的数据是无结构的。更何况heap中的数据无结构这种说法也不好理解啊，什么叫“无结构”呢？</p>
+
+</blockquote>
+
+<p>堆和栈在程序运行的时候应该都是处于相同的一块内存区域（从程序的整体角度来看），代码段、数据段、栈、堆，所以说存取速度应该是一样的。<br />
+我觉得从cpu和cache上来看他们都是内存，应该都是没什么差别的，但是申请堆上的空间涉及到操作系统中用户态和核心态之间的切换之类的，所以主要的差别可能就是在操作系统层面上的吧。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 13, 2013 10:55 AM">2013年12月13日 10:55</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-292772">#</a>
+ | <a href="#comment-text" title="引用weixue的这条留言" onclick="return CommentQuote('comment-quote-292772','weixue');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-293118" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://xfxlch.iteye.com/" href="http://xfxlch.iteye.com/" target="_blank" rel="nofollow">xfxlch</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-293118">
+            <blockquote>
+<pre>引用才不是永超呢的发言：</pre>
+
+<p>栈是线程的。堆是进程的。涨姿势了。</p>
+
+</blockquote>
+
+<p>jvm里面说一个线程对应一个虚拟机栈，而堆是针对的整个虚拟机的运行过程中的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 15, 2013  5:30 PM">2013年12月15日 17:30</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-293118">#</a>
+ | <a href="#comment-text" title="引用xfxlch的这条留言" onclick="return CommentQuote('comment-quote-293118','xfxlch');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-293253" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.tantengvip.com" href="http://www.tantengvip.com" target="_blank" rel="nofollow">小谈</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-293253">
+            <p>阮老师好像不是计算机专业的，但是对计算机知识的钻研比较深入，而且很专业，涉猎广泛，这种学习和钻研的精神值得我们学习啊！！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 16, 2013  2:09 PM">2013年12月16日 14:09</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-293253">#</a>
+ | <a href="#comment-text" title="引用小谈的这条留言" onclick="return CommentQuote('comment-quote-293253','小谈');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-293402" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">马化腾</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-293402">
+            <p>说的不对</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 17, 2013  9:50 AM">2013年12月17日 09:50</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-293402">#</a>
+ | <a href="#comment-text" title="引用马化腾的这条留言" onclick="return CommentQuote('comment-quote-293402','马化腾');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-293489" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">李彦宏</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-293489">
+            <p>楼上的，这么巧？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 17, 2013  6:22 PM">2013年12月17日 18:22</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-293489">#</a>
+ | <a href="#comment-text" title="引用李彦宏的这条留言" onclick="return CommentQuote('comment-quote-293489','李彦宏');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-293604" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://service.weibo.com/reg/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack" href="http://service.weibo.com/reg/ajaxlogin.php?framelogin=1&callback=parent.sinaSSOController.feedBackUrlCallBack" target="_blank" rel="nofollow">fyp</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-293604">
+            <p>感觉评论很精彩，不过阮老师讲的也很透彻，期待更好的文章。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 18, 2013  5:09 PM">2013年12月18日 17:09</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-293604">#</a>
+ | <a href="#comment-text" title="引用fyp的这条留言" onclick="return CommentQuote('comment-quote-293604','fyp');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-294078" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">BinaryHB</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-294078">
+            <p>函数（C++）和方法（Java）什么的叫法，不区分开。Java里没有指针。这些东西真的很伤我这样的初学者的。。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 22, 2013  3:58 PM">2013年12月22日 15:58</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-294078">#</a>
+ | <a href="#comment-text" title="引用BinaryHB的这条留言" onclick="return CommentQuote('comment-quote-294078','BinaryHB');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-294839" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">KG</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-294839">
+            <p>很精彩！以前有时候偶尔看看堆和栈的区别，但是过段时间又忘了。阮老师这篇文章很浅显易懂，这里的评论都很精彩，大家的学习兴趣很大！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 27, 2013  3:42 PM">2013年12月27日 15:42</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-294839">#</a>
+ | <a href="#comment-text" title="引用KG的这条留言" onclick="return CommentQuote('comment-quote-294839','KG');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-295850" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">luobenxlnslb</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-295850">
+            <p>作者表达能力很强，佩服!</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  3, 2014  5:13 PM">2014年1月 3日 17:13</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-295850">#</a>
+ | <a href="#comment-text" title="引用luobenxlnslb的这条留言" onclick="return CommentQuote('comment-quote-295850','luobenxlnslb');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-295855" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">马云</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-295855">
+            <p>正在看linux内核，希望阮老师写点汇编和内核的东西。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  3, 2014  5:50 PM">2014年1月 3日 17:50</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-295855">#</a>
+ | <a href="#comment-text" title="引用马云的这条留言" onclick="return CommentQuote('comment-quote-295855','马云');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-295953" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Hao</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-295953">
+            <blockquote>
+<pre>引用resty的发言：</pre>
+
+<p>stack的读取速度要比heap快的理论是怎么想出来的......</p>
+
+</blockquote>
+
+<p>应该说的是分配内存的速度吧。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  4, 2014  7:35 AM">2014年1月 4日 07:35</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-295953">#</a>
+ | <a href="#comment-text" title="引用Hao的这条留言" onclick="return CommentQuote('comment-quote-295953','Hao');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-296091" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Gin</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-296091">
+            <p>pop：返回并移除最顶层的数据，您说的是java里的吗？c++的是移除最顶层的数据，但是不返回。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  4, 2014  6:43 PM">2014年1月 4日 18:43</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-296091">#</a>
+ | <a href="#comment-text" title="引用Gin的这条留言" onclick="return CommentQuote('comment-quote-296091','Gin');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-296333" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">yfractal</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-296333">
+            <p>stack 感觉翻译成柴火堆（或者做下可视化）什么的，就很好理解。再比如比较坑的是权重，就是weight。更坑的是，正则表达。。。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  6, 2014  7:20 AM">2014年1月 6日 07:20</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-296333">#</a>
+ | <a href="#comment-text" title="引用yfractal的这条留言" onclick="return CommentQuote('comment-quote-296333','yfractal');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-296436" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Fred</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-296436">
+            <p>通常我会这么理解：方法体内的是存在栈的，而方法体外的都是堆里面的。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  6, 2014  3:53 PM">2014年1月 6日 15:53</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-296436">#</a>
+ | <a href="#comment-text" title="引用Fred的这条留言" onclick="return CommentQuote('comment-quote-296436','Fred');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-297032" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">micat</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-297032">
+            <p>不错，很形象生动，简洁清晰，涨知识了，谢谢</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  9, 2014  3:48 PM">2014年1月 9日 15:48</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-297032">#</a>
+ | <a href="#comment-text" title="引用micat的这条留言" onclick="return CommentQuote('comment-quote-297032','micat');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-297767" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">sipeny</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-297767">
+            <p>C++里用free(cls1)清除掉不用的对象实例对吧？<br />
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January 14, 2014  4:29 PM">2014年1月14日 16:29</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-297767">#</a>
+ | <a href="#comment-text" title="引用sipeny的这条留言" onclick="return CommentQuote('comment-quote-297767','sipeny');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-299006" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://www.jpdict.com" href="http://www.jpdict.com" target="_blank" rel="nofollow">jpdict</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-299006">
+            <p>简介易懂</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January 25, 2014  3:24 PM">2014年1月25日 15:24</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-299006">#</a>
+ | <a href="#comment-text" title="引用jpdict的这条留言" onclick="return CommentQuote('comment-quote-299006','jpdict');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-299798" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">LppRince</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-299798">
+            <p>看了大家的评论,有很些人觉得博主的这篇文章写的不够严谨,有些地方不够深入,这点我认同.但这不应该因为这个而抱怨,甚至对博主不敬.毕竟每个人的精力和能力有限.最重要的是博主的文章能够激发和引导我们去进一步探索我们想要的知识.那些抱怨文章不够深入的人,你们是否有认真看过博主给出的连接.我自从第一次无意闯进这个博客到现在,看了博主的不少文章,觉得博主写东西很用心,能做到这个份上已经很可贵了.那些想从博主的文章中得到所有自己想要的东西的人必定会失望.</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="February 11, 2014 10:47 AM">2014年2月11日 10:47</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-299798">#</a>
+ | <a href="#comment-text" title="引用LppRince的这条留言" onclick="return CommentQuote('comment-quote-299798','LppRince');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-301726" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Jimmy哥</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-301726">
+            <p>默默地添加了书签</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March  3, 2014  2:28 PM">2014年3月 3日 14:28</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-301726">#</a>
+ | <a href="#comment-text" title="引用Jimmy哥的这条留言" onclick="return CommentQuote('comment-quote-301726','Jimmy哥');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-302208" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://keenwon.com" href="http://keenwon.com" target="_blank" rel="nofollow">KeenWon</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-302208">
+            <p>浅显易懂，但是感觉站点的用户引导做的不太好，很多东西“藏”得太深。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March  9, 2014  3:04 PM">2014年3月 9日 15:04</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-302208">#</a>
+ | <a href="#comment-text" title="引用KeenWon的这条留言" onclick="return CommentQuote('comment-quote-302208','KeenWon');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-302236" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">勇敢的胆小鬼</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-302236">
+            <blockquote>
+<pre>引用KeenWon的发言：</pre>
+
+<p>浅显易懂，但是感觉站点的用户引导做的不太好，很多东西“藏”得太深。</p>
+
+</blockquote>
+不能同意更多
+
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March  9, 2014 10:04 PM">2014年3月 9日 22:04</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-302236">#</a>
+ | <a href="#comment-text" title="引用勇敢的胆小鬼的这条留言" onclick="return CommentQuote('comment-quote-302236','勇敢的胆小鬼');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-304663" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">netstu</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-304663">
+            <blockquote>
+<pre>引用Henry的发言：</pre>
+
+<p>所有语言通用还是只对.Net,因为我看到你引用的文章是正对.Net的，</p>
+
+<p><br />
+</p></blockquote>
+
+<p>这明明也是 java 好不好</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March 26, 2014  1:29 PM">2014年3月26日 13:29</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-304663">#</a>
+ | <a href="#comment-text" title="引用netstu的这条留言" onclick="return CommentQuote('comment-quote-304663','netstu');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-304677" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">mll</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-304677">
+            <p>what's the meaning of statck in "full stack engineer"? <br />
+hoho</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March 26, 2014  3:00 PM">2014年3月26日 15:00</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-304677">#</a>
+ | <a href="#comment-text" title="引用mll的这条留言" onclick="return CommentQuote('comment-quote-304677','mll');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-330041" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">hkant</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-330041">
+            <p>有的地方不太懂，按照文中所讲<br />
+public void Method1()<br />
+{<br />
+    int i=4;</p>
+
+<p>    int y=2;</p>
+
+<p>    class1 cls1 = new class1();<br />
+}<br />
+里面的i和y都是放在栈中的，如果class1是类似这样定义的：<br />
+public Class class1{<br />
+	public int k {get;set;}<br />
+	public void Method2(){<br />
+		int i2=4;</p>
+
+<p>    		int y2=2;</p>
+
+<p>    		class2 cls2 = new class2();<br />
+	}<br />
+}<br />
+这个class1对象中的方法Method2里面的局部变量i2和y2是跟随class1放在堆中的还是和i/y一样放在栈中的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  2, 2014  3:12 PM">2014年7月 2日 15:12</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-330041">#</a>
+ | <a href="#comment-text" title="引用hkant的这条留言" onclick="return CommentQuote('comment-quote-330041','hkant');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-337277" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">offerssss</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-337277">
+            <p>受益匪浅, 感谢分享!</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 11, 2014 10:15 AM">2014年9月11日 10:15</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-337277">#</a>
+ | <a href="#comment-text" title="引用offerssss的这条留言" onclick="return CommentQuote('comment-quote-337277','offerssss');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-341220" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">komac</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-341220">
+            <blockquote>
+<pre>引用mll的发言：</pre>
+
+<p>what's the meaning of statck in "full stack engineer"? <br />
+hoho</p>
+
+</blockquote>
+
+<p>Full stackengineer is the kind of engineer who knows every kind of technology</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="October 11, 2014 10:42 AM">2014年10月11日 10:42</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-341220">#</a>
+ | <a href="#comment-text" title="引用komac的这条留言" onclick="return CommentQuote('comment-quote-341220','komac');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-342607" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://blog.csdn.net/justme0" href="http://blog.csdn.net/justme0" target="_blank" rel="nofollow">Justme0</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-342607">
+            <p>最后一幅图中的 i, y, cls1 也是对象，它们放在栈上；cls1 指向的对象放在堆上。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November  4, 2014  8:33 PM">2014年11月 4日 20:33</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-342607">#</a>
+ | <a href="#comment-text" title="引用Justme0的这条留言" onclick="return CommentQuote('comment-quote-342607','Justme0');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-344074" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author"><a title="http://hongfu.me" href="http://hongfu.me" target="_blank" rel="nofollow">chf007</a></span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-344074">
+            <p>还有第四种用法</p>
+
+<p>全栈工程师 全栈框架（Symfony这种通常叫全栈框架） 的 “栈”是什么意思？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 17, 2014 11:28 PM">2014年11月17日 23:28</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-344074">#</a>
+ | <a href="#comment-text" title="引用chf007的这条留言" onclick="return CommentQuote('comment-quote-344074','chf007');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-347299" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">mrytsr</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-347299">
+            <p>我也觉得三个是同一个，我点近来以为能解释最近的困惑<br />
+比如 协议栈中的栈<br />
+OpenStack中的 stack 这些的区别</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January 17, 2015 10:54 PM">2015年1月17日 22:54</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-347299">#</a>
+ | <a href="#comment-text" title="引用mrytsr的这条留言" onclick="return CommentQuote('comment-quote-347299','mrytsr');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-350003" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">junbo Hu</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-350003">
+            <p>讲的很好，之前面试工作被问到栈，我只答上了数据结构这一层，当被问到堆时，我就懵了，一想数据结构哪里有堆这个东西呀，原来堆是内存空间的概念。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="May 29, 2015  3:12 PM">2015年5月29日 15:12</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-350003">#</a>
+ | <a href="#comment-text" title="引用junbo Hu的这条留言" onclick="return CommentQuote('comment-quote-350003','junbo Hu');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-350029" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">HOYO</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-350029">
+            <p>这篇文章讲的偏差有点大</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="May 31, 2015  2:34 AM">2015年5月31日 02:34</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-350029">#</a>
+ | <a href="#comment-text" title="引用HOYO的这条留言" onclick="return CommentQuote('comment-quote-350029','HOYO');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-350030" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">HOYO</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-350030">
+            <blockquote>
+<pre>引用junbo Hu的发言：</pre>
+
+<p>讲的很好，之前面试工作被问到栈，我只答上了数据结构这一层，当被问到堆时，我就懵了，一想数据结构哪里有堆这个东西呀，原来堆是内存空间的概念。</p>
+
+</blockquote>
+数据结构里面有堆。。
+
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="May 31, 2015  2:35 AM">2015年5月31日 02:35</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-350030">#</a>
+ | <a href="#comment-text" title="引用HOYO的这条留言" onclick="return CommentQuote('comment-quote-350030','HOYO');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-350374" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">步行者</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-350374">
+            <p>似乎有点不打对</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 17, 2015  9:17 AM">2015年6月17日 09:17</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-350374">#</a>
+ | <a href="#comment-text" title="引用步行者的这条留言" onclick="return CommentQuote('comment-quote-350374','步行者');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-350880" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">小昏昏</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-350880">
+            <p>通俗易懂<br />
+建议那些评论说有偏差的给予正确的说法，不要说看这，看那，自己总结下塞</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 16, 2015  6:09 PM">2015年7月16日 18:09</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-350880">#</a>
+ | <a href="#comment-text" title="引用小昏昏的这条留言" onclick="return CommentQuote('comment-quote-350880','小昏昏');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-359635" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">joyc</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-359635">
+            <p>只要是局部的、占用空间确定的数据，一般都存放在stack里面，否则就放在heap里面。 这句反了吧</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 22, 2016 10:32 PM">2016年6月22日 22:32</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-359635">#</a>
+ | <a href="#comment-text" title="引用joyc的这条留言" onclick="return CommentQuote('comment-quote-359635','joyc');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-359636" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">joyc</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-359636">
+            <blockquote>
+<pre>引用joyc的发言：</pre>
+
+<p>只要是局部的、占用空间确定的数据，一般都存放在stack里面，否则就放在heap里面。 这句反了吧</p>
+
+</blockquote>
+口误，我觉得应该不是这个判断标准，值类型放到stack吧 请指正！
+ 
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 22, 2016 10:37 PM">2016年6月22日 22:37</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-359636">#</a>
+ | <a href="#comment-text" title="引用joyc的这条留言" onclick="return CommentQuote('comment-quote-359636','joyc');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360667" class="comment">
+    <div  class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">11111</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360667">
+            <p>对于java 语言解释来说 我是能看懂的。 非常容易理解。 </p>
+
+<p>不知道那些 大神 为什么说不对。  哪里不对呢？</p>
+
+<p>我真想看看你们的文章  快点给我链接我要看看。</p>
+
+<p>调用栈 js 里面应该很多。</p>
+
+<p>第三个 我非常的喜欢啊，解释的很透彻 谢谢。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 14, 2016  4:17 PM">2016年7月14日 16:17</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-360667">#</a>
+ | <a href="#comment-text" title="引用11111的这条留言" onclick="return CommentQuote('comment-quote-360667','11111');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-368986" class="comment">
+    <div id="comment-last" class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">zoffy</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-368986">
+            <p>跟csapp上说的不一样</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 23, 2016 12:02 PM">2016年11月23日 12:02</abbr>
+ | <a href="http://www.ruanyifeng.com/blog/2013/11/stack.html#comment-368986">#</a>
+ | <a href="#comment-text" title="引用zoffy的这条留言" onclick="return CommentQuote('comment-quote-368986','zoffy');">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    </div>
+        
+    
+
+
+    
+    
+    <div class="comments-open" id="comments-open">
+        <h2 class="comments-open-header">我要发表看法</h2>
+        <div class="comments-open-content">
+
+        
+            <div id="comment-greeting"></div>
+
+            <form method="post" action="http://www.ruanyifeng.com/cgi-bin/mtos/mt-comments.cgi" name="comments_form" id="comments-form" onsubmit="return pleaseWait();">
+                <input type="hidden" name="static" value="1" />
+                <input type="hidden" name="entry_id" value="1794" />
+                <input type="hidden" name="__lang" value="en" />
+                <input type="hidden" name="parent_id" value="" id="comment-parent-id" />
+                <input type="hidden" name="armor" value="1" />
+                <input type="hidden" name="preview" value="" />
+                <input type="hidden" name="sid" value="" />
+                <div id="comments-open-data">
+            <div id="comments-open-text">
+                    <p><label for="comment-text">您的留言
+                    （HTML标签部分可用）</label></p>
+                    <p><textarea id="comment-text" name="text" rows="10" cols="50"></textarea></p>
+                </div>
+                    <div id="comment-form-name">
+                        <p><label for="comment-author">您的大名：</label></p>
+                        <p><input id="comment-author" name="author" size="30" value="" />  <span class="hint"> &laquo;-必填</span></p>
+                    </div>
+                    <div id="comment-form-email">
+                        <p><label for="comment-email">电子邮件：</label></p>
+                        <p><input id="comment-email" name="email" size="30" value="" />  <span class="hint"> &laquo;-必填，不公开</span></p>
+                    </div>
+                    <div id="comment-form-url">
+                        <p><label for="comment-url">个人网址：</label></p>
+                        <p><input id="comment-url" name="url" size="30" value="" />  <span class="hint"> &laquo;-我信任你，不会填写广告链接</span></p>
+                    </div>
+                    <div id="comment-form-remember-me">
+                        <p>
+                        <label for="comment-bake-cookie">记住个人信息？</label><input type="checkbox" id="comment-bake-cookie" name="bakecookie" onclick="!this.checked?forgetMe(document.comments_form):rememberMe(document.comments_form)" value="1" accesskey="r" /></p>
+                    </div>
+                </div>
+                    <div id="comment-form-reply" style="display:none">
+                    <input type="checkbox" id="comment-reply" name="comment_reply" value="" onclick="mtSetCommentParentID()" />
+                    <label for="comment-reply" id="comment-reply-label"></label>
+                </div>
+                <div id="comments-open-captcha"></div>
+                <div id="comments-open-footer">
+<div id="wait" style="display:none;">
+<p><strong>正在发表您的评论，请稍候</strong></p>
+<p>
+<input type="text" name="percent" size="3" style="font-family:Arial; color:black;text-align:center; border-width:medium; border-style:none;">           
+<input type="text" name="chart" size="46" style="font-family:Arial;font-weight:bolder; color:black; padding:0px; border-style:none;">
+</p>
+</div>
+
+                    <p><input type="submit" accesskey="s" name="post" id="comment-submit" value="发表" />  <span class="hint"> &laquo;- 点击按钮</span></p>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+    
+
+
+</div>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        <script type="text/javascript" src="http://www.ruanyifeng.com/blog/js/prism.js"></script>
+
+            <div id="footer">
+    <div id="footer-inner">
+        <div id="footer-content">
+<p><a href="/contact.html">联系方式</a> | ruanyifeng.com 2003 - 2017
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46829782-1', 'ruanyifeng.com');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<!-- Site Meter -->
+<a href="http://sm3.sitemeter.com/stats.asp?site=sm3bomoocom" target="_top">
+<img src="http://sm3.sitemeter.com/meter.asp?site=sm3bomoocom" alt="Site Meter" border="0"/></a>
+
+<!-- Copyright (c)2009 Site Meter -->
+
+</p>
+
+        </div>
+    </div>
+</div>
+
+
+<div id="share_button_proto" style="display:none;">
+<a class="bshareDiv" href="http://www.bshare.cn/share">分享按钮</a>
+
+
+
+<script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#uuid=15e016b4-0028-44f1-a40d-a3c9d9c13c28&style=10&bgcolor=#fff&bp=facebook,twitter,sinaminiblog,weixin,gplus,qqmb,qzone,douban,qqim,fanfou,instapaper,xueqiu&ssc=false"></script>
+<script type="text/javascript" charset="utf-8">
+bShare.addEntry({
+    title: document.getElementById("page-title").innerHTML,
+url:window.location.href
+});
+</script>
+</div>
+
+<script>
+document.getElementById("share_button").innerHTML=document.getElementById("share_button_proto").innerHTML;
+</script>
+
+
+
+
+        </div>
+    </div>
+</body>
+</html>
